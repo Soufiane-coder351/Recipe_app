@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Profile - Recipe App</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="font-sans antialiased bg-gray-100">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{% url 'recipes' %}" class="text-2xl font-semibold text-teal-600">Recipe App</a>
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'logout' %}" class="bg-gray-800 text-white hover:bg-gray-900 px-4 py-2 rounded-lg">Se
+                    déconnecter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="bg-gray-900 py-16">
+        <div class="container mx-auto text-center text-white">
+            <h1 class="text-4xl font-bold">Bienvenue, {{ user.username }}</h1>
+            <p class="text-lg mt-4 text-gray-400">Accédez à vos paramètres, recettes créées et favoris.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Settings Panel -->
+        <section class="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Paramètres</h2>
+            <div class="border-t-2 border-gray-200 my-4"></div>
+            <div class="flex items-center space-x-4 mb-6">
+                <img class="w-16 h-16 rounded-full object-cover border-2 border-teal-500"
+                    src="https://dummyimage.com/64x64/dee2e6/6c757d.jpg" alt="Profile Picture">
+                <div>
+                    <p class="text-lg font-semibold text-gray-800">{{ user.username }}</p>
+                    <p class="text-sm text-gray-600">Email: {{ user.email }}</p>
+                    <p class="text-sm text-gray-600">Membre depuis: {{ user.date_joined|date:"d M Y" }}</p>
+                </div>
+            </div>
+            <ul class="space-y-4">
+                <li class="flex justify-between items-center">
+                    <span class="text-lg text-gray-700">Modifier le nom</span>
+                    <a href="{% url 'change_name' %}" class="text-teal-600 hover:underline">Modifier</a>
+                </li>
+                <li class="flex justify-between items-center">
+                    <span class="text-lg text-gray-700">Changer le mot de passe</span>
+                    <a href="{% url 'change_password' %}" class="text-teal-600 hover:underline">Changer</a>
+                </li>
+            </ul>
+        </section>
+
+        <!-- My Recipes and My Favorites (In Same Row) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
+            <!-- My Recipes Panel -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Mes Recettes</h2>
+                <div class="border-t-2 border-gray-200 my-4"></div>
+                {% if recettes_user %}
+                <div class="space-y-4 mt-4" style="max-height: 400px; overflow-y: auto;">
+                    {% for recette in recettes_user %}
+                    <div class="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+                        <div class="w-1/3">
+                            <img src="../../../recipes_photos/{{ recette.image }}"
+                                class="w-full h-[150px] object-cover rounded-lg"
+                                onerror="this.onerror=null; this.src='https://dummyimage.com/450x300/dee2e6/6c757d.jpg';">
+                        </div>
+                        <div class="ml-4 w-2/3">
+                            <h3 class="text-xl font-semibold text-gray-800">{{ recette.title }}</h3>
+                            <p class="text-gray-600">{{ recette.description|truncatewords:10 }}</p>
+                            <div class="mt-4 flex space-x-4">
+                                <a href="{% url 'recette_info' recette.id %}"
+                                    class="px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+                                    Voir la recette
+                                </a>
+                                <button onclick="confirmDelete(event, '{{ recette.id }}')"
+                                    class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                                    Supprimer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-600">Vous n'avez pas encore créé de recettes.</p>
+                {% endif %}
+                <button class="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg mt-4">
+                    <a href="{% url 'createrecipe' %}">Ajouter une recette</a>
+                </button>
+            </div>
+
+            <script>
+                function confirmDelete(event, recetteId) {
+                    event.preventDefault();
+                    const userConfirmed = confirm("Êtes-vous sûr de vouloir supprimer cette recette ?");
+                    if (userConfirmed) {
+                        window.location.href = `delete_recipe/${recetteId}/`; // Changez l'URL si nécessaire
+                    }
+                }
+            </script>
+
+            <!-- My Favorites Panel -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Mes Favoris</h2>
+                <div class="border-t-2 border-gray-200 my-4"></div>
+                {% if recettesfav %}
+                <div class="space-y-4 mt-4" style="max-height: 400px; overflow-y: auto;">
+                    {% for fav in recettesfav %}
+                    <div class="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+                        <div class="w-1/3">
+                            <img src="../../../recipes_photos/{{ fav.recette.image }}"
+                                class="w-full h-[150px] object-cover rounded-lg"
+                                onerror="this.onerror=null; this.src='https://dummyimage.com/450x300/dee2e6/6c757d.jpg';">
+                        </div>
+                        <div class="ml-4 w-2/3 flex flex-col">
+                            <h3 class="text-xl font-semibold text-gray-800">{{ fav.recette.title }}</h3>
+                            <p class="text-gray-600">{{ fav.recette.description|truncatewords:10 }}</p>
+                            <div class="mt-auto flex justify-between items-center">
+                                <!-- Aligns the button in the bottom-right -->
+                                <a href="{% url 'recette_info' fav.recette.id %}"
+                                    class="mt-4 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+                                    Voir la recette
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-600">Vous n'avez pas encore de recettes favorites.</p>
+                {% endif %}
+                <button class="mt-6 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600">
+                    <a href="{% url 'recettes_favorites' %}">Voir tous les favoris</a>
+                </button>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6">
+        <div class="container mx-auto text-center text-white">
+            <p>&copy; Recipe App 2024. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Favorites - Recipe App</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="font-sans antialiased flex flex-col min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Left side -->
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'recipes' %}" class="text-2xl font-semibold text-teal-600">Recipe App</a>
+            </div>
+            <!-- Right side -->
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                <p class="text-gray-700">Bonjour, <span class="font-bold">{{ user.username }}</span></p>
+                <a href="{% url 'profile' %}"
+                    class="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg">Profile</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="bg-gray-800 text-white hover:bg-gray-900 px-4 py-2 rounded-lg">Se
+                    connecter</a>
+                <a href="{% url 'signup' %}"
+                    class="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 rounded-lg">S'inscrire</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <!-- Header -->
+    <header class="bg-gray-900 py-16">
+        <div class="container mx-auto text-center text-white">
+            <h1 class="text-4xl font-bold">Vos Recettes Favorites</h1>
+            <p class="text-lg mt-4 text-gray-400">Découvrez vos recettes favorites en un clin d'œil !</p>
+        </div>
+    </header>
+    <!-- Search Bar -->
+    <!-- <section class="mt-8">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center">
+                <input type="text" placeholder="Rechercher une recette..." class="flex-1 border border-gray-300 p-3 rounded-l-lg focus:outline-none">
+                <button class="bg-teal-500 text-white hover:bg-teal-600 px-6 py-3 rounded-r-lg">Rechercher</button>
+            </div>
+        </div>
+    </section> -->
+    <!-- Recipes Section -->
+    <section class="py-8 flex-grow">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for fav in favoris %}
+                <div
+                    class="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:scale-105 transform transition flex flex-col">
+                    <img src="../../../recipes_photos/{{fav.recette.image }}"
+                        class="w-full h-[200px] object-cover rounded-lg"
+                        onerror="this.onerror=null; this.src='https://dummyimage.com/450x300/dee2e6/6c757d.jpg';">
+                    <div class="p-4 flex-grow">
+                        <h2 class="text-xl font-semibold text-gray-800">{{ fav.recette.title }}</h2>
+                        <p class="text-gray-600 mt-2">{{ fav.recette.description|truncatewords:10 }}</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 mt-auto">
+                        <a href="{% url 'recette_info' fav.recette.id%}"
+                            class="bg-teal-500 text-white hover:bg-teal-600 px-4 py-2 block text-center rounded-lg">Découvrez
+                            la recette</a>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-gray-700">Aucune recette favorite trouvée.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6 mt-auto">
+        <div class="container mx-auto text-center text-white">
+            <p>&copy; Recipe App 2024. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

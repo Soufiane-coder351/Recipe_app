@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Recipe App - Changer le nom</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 font-sans antialiased">
+    <!-- Navigation -->
+    <nav class="bg-gray-900">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{% url 'recipes' %}" class="text-2xl font-bold text-white">Recipe App</a>
+            <div>
+                <a href="{% url 'recipes' %}" class="text-gray-300 hover:text-white">Accueil</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Split Section -->
+    <section class="h-[calc(100vh-6rem)] flex items-center justify-center">
+        <div
+            class="container mx-auto max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden flex flex-col md:flex-row">
+            <!-- Form Section -->
+            <div class="w-full md:w-1/2 p-6 flex flex-col justify-center">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-800">Changer le nom</h2>
+                    <p class="text-gray-600 mt-2">Veuillez entrer votre nouveau nom pour le mettre à jour.</p>
+                </div>
+
+                <!-- Errors Display -->
+                {% if errors %}
+                <div class="mt-4 bg-red-50 border border-red-200 text-red-600 p-3 rounded-lg">
+                    <ul>
+                        {% for error in errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Change Name Form -->
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="newName" class="block text-sm font-medium text-gray-700">Nouveau nom</label>
+                        <div class="relative mt-1">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <!-- User Icon -->
+                                <i class="fa-solid fa-user text-gray-400"></i>
+                            </span>
+                            <input type="text" name="new_name" id="newName"
+                                class="w-full border border-gray-300 rounded-lg shadow-sm focus:border-teal-500 focus:ring focus:ring-teal-200 focus:ring-opacity-50 px-4 py-2 text-sm pl-10"
+                                placeholder="Entrez votre nouveau nom" required />
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <button type="submit"
+                            class="w-full bg-teal-500 text-white py-2 text-sm rounded-lg shadow-md hover:bg-teal-600 transition">
+                            Changer le nom
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right: Dark Section -->
+            <div class="w-full md:w-1/2 bg-teal-800 flex items-center justify-center">
+                <p class="text-white text-lg font-medium">Bienvenue sur Recipe App !</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-4">
+        <div class="container mx-auto text-center text-white">
+            <p>&copy; Recipe App 2024. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

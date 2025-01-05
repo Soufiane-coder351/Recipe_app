@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats de la recherche</title>
+    <!-- Inclure le lien vers le fichier CSS de Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-gray-900">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <!-- Left side -->
+            <div class="flex items-center space-x-4">
+                <a href="{% url 'recipes' %}" class="text-2xl font-bold text-white">Recipe App</a>
+                {% if user.is_authenticated %}
+                <a class="text-white hover:text-teal-600 mr-auto" href="{% url 'recettes_favorites' %}">Favoris</a>
+                {% endif %}
+
+            </div>
+            <!-- Right side -->
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                <p class="text-white">Bonjour, <span class="font-bold">{{ user.username }}</span></p>
+                <!-- Greenish Button -->
+                <a href="{% url 'profile' %}"
+                    class="bg-green-500 text-white hover:bg-green-600 px-4 py-2 rounded-lg">Profile</a>
+                {% else %}
+                <!-- Whitish Button -->
+                <a href="{% url 'login' %}"
+                    class="bg-white text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-300">Se
+                    connecter</a>
+                <!-- Greenish Button -->
+                <a href="{% url 'signup' %}"
+                    class="bg-green-500 text-white hover:bg-green-600 px-4 py-2 rounded-lg">S'inscrire</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Section de recherche -->
+    <section class="py-8 flex-grow">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-semibold text-gray-800 mb-8">Résultats de la recherche</h1>
+
+            {% if recherches %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {% for recette in recherches %}
+                <div
+                    class="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden flex flex-col hover:scale-105 transform transition">
+                    <!-- Image with Fixed Height -->
+                    <div class="h-[200px] w-full">
+                        <img src="../../../recipes_photos/{{ recette.image }}" class="h-full w-full object-cover"
+                            onerror="this.onerror=null; this.src='https://dummyimage.com/450x300/dee2e6/6c757d.jpg';">
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-4 flex-grow">
+                        <h2 class="text-xl font-semibold text-gray-800">{{ recette.title }}</h2>
+                        <p class="text-gray-600 mt-2">{{ recette.description|truncatewords:10 }}</p>
+                    </div>
+
+                    <!-- Button at the Bottom -->
+                    <div class="p-4 bg-gray-50">
+                        <a href="{% url 'recette_info' recette.id %}"
+                            class="bg-green-500 text-white hover:bg-green-600 px-4 py-2 block text-center rounded-lg">
+                            Découvrez la recette
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% else %}
+            <p class="text-gray-600">Aucune recette trouvée pour votre recherche.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 py-6">
+        <div class="container mx-auto text-center text-white">
+            <p>&copy; Recipe App 2024. Tous droits réservés.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
